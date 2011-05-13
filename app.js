@@ -66,7 +66,6 @@ function uploadFile( req, res ) {
       fileStream    = null;
 
   stream.onPartBegin = function( part ) {
-sys.debug('onPartBegin');
     var dirName = createUploadDirectory(req);
     fileName    = dirName + '/' + part.filename;
     fileStream  = fs.createWriteStream(fileName);
@@ -82,7 +81,6 @@ sys.debug('onPartBegin');
   };
 
   stream.onData = function( chunk ) {
-sys.debug('onData');
     req.pause();
 
     fileStream.write(chunk, 'binary');
@@ -94,13 +92,10 @@ sys.debug('onData');
   };
 
   stream.onEnd = function() {
-sys.debug('onEnd');
-    if ( fileStream ) {
-      fileStream.end();
-      writeSession(req, 'complete', true);
-      writeSession(req, 'progress', 100.00);
-      uploadComplete(req, res);
-    }
+    fileStream.end();
+    writeSession(req, 'complete', true);
+    writeSession(req, 'progress', 100.00);
+    uploadComplete(req, res);
   };
 }
 

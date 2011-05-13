@@ -22,7 +22,6 @@
         } else {
           createIframe(self);
           $(self).find(':file').change(function( ){
-            $(this).prop('disabled', 'disabled');
             self.submit();
           });
         }
@@ -45,7 +44,6 @@
           self.action.replace('?uid='+self.uid, '');
           self.uid = self.timeout = null;
 
-          self.find(':file').removeProp('disabled');
           self.append('<p id="uploaded"><a href="'+data.path+'">Uploaded to here.</a></p>');
 
           console.log('upload:complete');
