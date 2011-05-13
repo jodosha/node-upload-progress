@@ -7,10 +7,12 @@ require.paths.unshift(__dirname + '/vendor/');
 
 var express   = require('express'),
     multipart = require('multipart'),
+    keys      = require('keys'),
     sys       = require('sys'),
     fs        = require('fs');
 
 var app = module.exports = express.createServer();
+app.store = new keys.Memory();
 
 // Configuration
 
@@ -20,7 +22,6 @@ app.configure(function( ){
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
-  app.use(express.session({ secret: '926faa0645216a5f118d501b7d4d23d6af2f7b128a497a6577c33d158fdb970cbeba1df70ce18398c23b4f57ad85abcbbb603121f540e5aeea125a003d188678' }));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
 });
@@ -46,13 +47,15 @@ app.post('/songs', function( req, res ){
 });
 
 app.get('/uploads/:uid', function( req, res ){
-  if ( data = readSession(req) ) {
-    res.writeHead(200, {'Content-Type': 'application/json'});
-    res.write(JSON.stringify(data));
-    res.end();
-  } else {
-    res.send('Not Found', { 'Content-Type': 'text/plain' }, 404);
-  }
+  readSession(req, 'progress', function( err, buf ){
+    if ( buf ) {
+      res.writeHead(200, {'Content-Type': 'application/json'});
+      res.write(JSON.stringify({ progress: buf.toString() }));
+      res.end();
+    } else {
+      res.send('Not Found', { 'Content-Type': 'text/plain' }, 404);
+    }
+  });
 });
 
 // Upload
@@ -87,15 +90,15 @@ function uploadFile( req, res ) {
     fileStream.write(chunk, 'binary');
     bytesReceived += chunk.length;
 
-    var progress = (bytesReceived / bytesTotal * 100).toFixed(2);
+    var progress = Math.round( (bytesReceived / bytesTotal * 100) ).toString();
     writeSession(req, 'progress', progress);
     // sys.debug(progress + '%');
   };
 
   stream.onEnd = function() {
     fileStream.end();
-    writeSession(req, 'complete', true);
-    writeSession(req, 'progress', 100.00);
+    writeSession(req, 'complete', 'true');
+    writeSession(req, 'progress', '100');
     uploadComplete(req, res);
   };
 }
@@ -126,36 +129,28 @@ function createUploadDirectory( req ) {
 }
 
 function writeSession( req, key, value ) {
-  var uid = req.param('uid');
-
-  if ( req.session.uploads === undefined ) {
-    req.session.uploads = { };
-  };
-
-  if ( req.session.uploads[uid] === undefined ) {
-    req.session.uploads[uid] = { };
-  };
-
-  req.session.uploads[uid][key] = value;
+  app.store.set(sessionKeyFor(req, key), value);
 }
 
-function readSession( req ) {
-  if ( req.session.uploads ) {
-    var uid = req.param('uid');
-    return req.session.uploads[uid];
-  };
+function readSession( req, key, fn ) {
+  app.store.get(sessionKeyFor(req, key), fn);
 }
 
 function clearSession( req ) {
-  req.session.uploads = undefined;
+  app.store.clear();
+}
+
+function sessionKeyFor( req, key ) {
+  var uid = req.param('uid');
+  return 'uploads.' + uid + '.' + key;
 }
 
 function uploadComplete( req, res ) {
-  var uid = req.param('uid');
-
-  res.render('create', {
-    layout: false,
-    path: req.session.uploads[uid]['path']
+  readSession(req, 'path', function( err, buf ){
+    res.render('create', {
+      layout: false,
+      path:   buf.toString()
+    });
   });
 }
 
