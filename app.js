@@ -46,7 +46,7 @@ app.post('/songs', function( req, res ){
 });
 
 app.get('/uploads/:uid', function( req, res ){
-  if ( req.session.uploads && (data = req.session.uploads[req.params.uid]) ) {
+  if ( data = readSession(req) ) {
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.write(JSON.stringify(data));
     res.end();
@@ -136,6 +136,13 @@ function writeSession( req, key, value ) {
   };
 
   req.session.uploads[uid][key] = value;
+}
+
+function readSession( req ) {
+  if ( req.session.uploads ) {
+    var uid = req.param('uid');
+    return req.session.uploads[uid];
+  };
 }
 
 function uploadComplete( req, res ) {
