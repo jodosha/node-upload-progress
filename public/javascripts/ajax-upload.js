@@ -21,7 +21,7 @@
           // TODO implement for HTML5 compliant browsers
         } else {
           createIframe(self);
-          $(self).find(':file').change(function( ){
+          self.find(':file').change(function( ){
             self.submit();
           });
         }
@@ -41,12 +41,11 @@
 
         $(document).bind('upload:complete', function( event, data ){
           window.clearTimeout(self.timeout);
-          self.action.replace('?uid='+self.uid, '');
+          self[0].action.replace('?uid='+self.uid, '');
           self.uid = self.timeout = null;
 
           self.append('<p id="uploaded"><a href="'+data.path+'">Uploaded to here.</a></p>');
-
-          console.log('upload:complete');
+          $('#status').text('100')
         });
       });
     }

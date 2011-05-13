@@ -139,9 +139,11 @@ function writeSession( req, key, value ) {
 }
 
 function uploadComplete( req, res ) {
+  var uid = req.param('uid');
+
   res.render('create', {
     layout: false,
-    path: '/x'
+    path: req.session.uploads[uid]['path']
   });
 }
 
