@@ -35,11 +35,17 @@
           pollUpload(self);
         });
 
-        $(document).bind('upload:complete', function( ){
+        $(document).bind('upload:progress', function( event, data ){
+          $('#status').text(data.progress);
+        });
+
+        $(document).bind('upload:complete', function( event, data ){
           window.clearTimeout(self.timeout);
+          self.action.replace('?uid='+self.uid, '');
           self.uid = self.timeout = null;
 
           self.find(':file').removeProp('disabled');
+          self.append('<p id="uploaded"><a href="'+data.path+'">Uploaded to here.</a></p>');
 
           console.log('upload:complete');
         });
@@ -74,7 +80,7 @@
 
   function pollUpload( element ) {
     $.getJSON('/uploads/' + element.uid, function(data){
-      console.log(data);
+      $(document).trigger('upload:progress', data);
     });
 
     element.timeout = window.setTimeout(function( ){

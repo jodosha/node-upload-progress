@@ -1,13 +1,12 @@
 h1 New Song
 form#upload(action="/songs", method="post", enctype="multipart/form-data")
-  div#status
   p
     label(for="song_file") Upload a new song
     br
     input#song_file(type="file", name="song[file]")
-  p
-    input(type="submit", value="Upload")
-
+  p Status 
+    span#status 0
+    %.
 form
   p
     label(for="song_description") Description

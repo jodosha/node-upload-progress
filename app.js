@@ -46,7 +46,6 @@ app.post('/songs', function( req, res ){
 });
 
 app.get('/uploads/:uid', function( req, res ){
-sys.debug(req.session.uploads[req.params.uid]);
   if ( req.session.uploads && (data = req.session.uploads[req.params.uid]) ) {
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.write(JSON.stringify(data));
@@ -67,6 +66,7 @@ function uploadFile( req, res ) {
       fileStream    = null;
 
   stream.onPartBegin = function( part ) {
+sys.debug('onPartBegin');
     var dirName = createUploadDirectory(req);
     fileName    = dirName + '/' + part.filename;
     fileStream  = fs.createWriteStream(fileName);
@@ -82,6 +82,7 @@ function uploadFile( req, res ) {
   };
 
   stream.onData = function( chunk ) {
+sys.debug('onData');
     req.pause();
 
     fileStream.write(chunk, 'binary');
@@ -93,10 +94,13 @@ function uploadFile( req, res ) {
   };
 
   stream.onEnd = function() {
-    fileStream.end();
-    writeSession(req, 'complete', true);
-    writeSession(req, 'progress', 100.00);
-    uploadComplete(res);
+sys.debug('onEnd');
+    if ( fileStream ) {
+      fileStream.end();
+      writeSession(req, 'complete', true);
+      writeSession(req, 'progress', 100.00);
+      uploadComplete(req, res);
+    }
   };
 }
 
@@ -139,9 +143,10 @@ function writeSession( req, key, value ) {
   req.session.uploads[uid][key] = value;
 }
 
-function uploadComplete( res ) {
+function uploadComplete( req, res ) {
   res.render('create', {
-    layout: false
+    layout: false,
+    path: '/x'
   });
 }
 
