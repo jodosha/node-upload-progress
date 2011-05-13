@@ -77,7 +77,10 @@ function uploadFile( req, res ) {
 
   stream.onPartBegin = function( part ) {
     var dirName = createUploadDirectory(req);
-    fileName    = dirName + '/' + part.filename;
+
+    // Forcing the file basename, because IE sends the full file system path
+    fileName    = part.filename.split(/\\/).reverse()[0]
+    fileName    = dirName + '/' + fileName;
     fileStream  = fs.createWriteStream(fileName);
     clearSession(req);
     writeSession(req, 'path', fileName.replace('./public', ''));
