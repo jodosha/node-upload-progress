@@ -21,6 +21,7 @@
         } else {
           createIframe(self);
           $(self).find(':file').change(function( ){
+            $(this).prop('disabled', 'disabled');
             self.submit();
           });
         }
@@ -37,6 +38,8 @@
         $(document).bind('upload:complete', function( ){
           window.clearTimeout(self.timeout);
           self.uid = self.timeout = null;
+
+          self.find(':file').removeProp('disabled');
 
           console.log('upload:complete');
         });
