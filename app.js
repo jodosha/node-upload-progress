@@ -69,6 +69,7 @@ function uploadFile( req, res ) {
     var dirName = createUploadDirectory(req);
     fileName    = dirName + '/' + part.filename;
     fileStream  = fs.createWriteStream(fileName);
+    clearSession(req);
     writeSession(req, 'path', fileName);
 
     fileStream.addListener("error", function(err) {
@@ -143,6 +144,10 @@ function readSession( req ) {
     var uid = req.param('uid');
     return req.session.uploads[uid];
   };
+}
+
+function clearSession( req ) {
+  req.session.uploads = undefined;
 }
 
 function uploadComplete( req, res ) {
