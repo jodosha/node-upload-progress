@@ -43,6 +43,13 @@ app.get('/', function( req, res ){
 });
 
 app.post('/songs', function( req, res ){
+  res.render('create', {
+    path:        req.body.song.path,
+    description: req.body.song.description
+  });
+});
+
+app.post('/upload', function( req, res ){
   uploadFile(req, res);
 });
 
@@ -73,7 +80,7 @@ function uploadFile( req, res ) {
     fileName    = dirName + '/' + part.filename;
     fileStream  = fs.createWriteStream(fileName);
     clearSession(req);
-    writeSession(req, 'path', fileName);
+    writeSession(req, 'path', fileName.replace('./public', ''));
 
     fileStream.addListener("error", function(err) {
       sys.debug(err);
@@ -147,7 +154,7 @@ function sessionKeyFor( req, key ) {
 
 function uploadComplete( req, res ) {
   readSession(req, 'path', function( err, buf ){
-    res.render('create', {
+    res.render('uploaded', {
       layout: false,
       path:   buf.toString()
     });

@@ -45,7 +45,9 @@
           self.uid = self.timeout = null;
 
           self.append('<p id="uploaded"><a href="'+data.path+'">Uploaded to here.</a></p>');
-          $('#status').text('100')
+
+          $('#song_path').val(data.path);
+          $('#status').text('100');
         });
       });
     }
@@ -58,14 +60,15 @@
     element.attr('target', element.options.iframeName);
   };
 
+  // Check if the current browser supports the new FIle and XHR APIs:
+  //   http://dev.w3.org/2006/webapi/FileAPI/
+  //   http://dev.w3.org/2006/webapi/XMLHttpRequest-2/
   function html5FileAPI( options ) {
     // Check only if the current value is `undefined` (default),
     // because the developer may want to disable this check by setting
     // the value on `false`.
     if ( options.html5 === undefined ) {
-      // TODO check if the current browser supports the new FIle and XHR APIs:
-      //   http://dev.w3.org/2006/webapi/FileAPI/
-      //   http://dev.w3.org/2006/webapi/XMLHttpRequest-2/
+      // TODO implement
       options.html5 = false;
     }
 
