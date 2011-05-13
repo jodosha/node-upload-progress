@@ -104,7 +104,6 @@ function uploadFile( req, res ) {
 
   stream.onEnd = function() {
     fileStream.end();
-    writeSession(req, 'complete', 'true');
     writeSession(req, 'progress', '100');
     uploadComplete(req, res);
   };
