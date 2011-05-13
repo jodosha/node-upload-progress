@@ -13,6 +13,7 @@
         self.options = $.extend({
           iframeName:       'progressFrame',
           html5:            undefined,
+          uidLength:        16,
           pollingFrequency: 2000
         }, options);
 
@@ -75,7 +76,14 @@
   }
 
   function generateUID( element ) {
-    return element.uid = "5";
+    var result = "",
+        chars  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+    for (var i = 0; i < element.options.uidLength; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    };
+
+    return element.uid = result;
   }
 
   function pollUpload( element ) {
