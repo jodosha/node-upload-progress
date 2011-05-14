@@ -12,19 +12,15 @@
         var self     = $(this);
         self.options = $.extend({
           iframeName:       'progressFrame',
-          html5:            undefined,
           uidLength:        16,
           pollingFrequency: 2000
         }, options);
 
-        if ( html5FileAPI(self.options) ) {
-          // TODO implement for HTML5 compliant browsers
-        } else {
-          createIframe(self);
-          self.find(':file').change(function( ){
-            self.submit();
-          });
-        }
+        createIframe(self);
+
+        self.find(':file').change(function( ){
+          self.submit();
+        });
 
         $(self).submit(function( ){
           this.action += '?uid=' + generateUID(self);
@@ -59,21 +55,6 @@
     $(document.body).append($('<iframe name="'+element.options.iframeName+'" style="width:0;height:0;position:absolute;top:-999px"></iframe>'));
     element.attr('target', element.options.iframeName);
   };
-
-  // Check if the current browser supports the new FIle and XHR APIs:
-  //   http://dev.w3.org/2006/webapi/FileAPI/
-  //   http://dev.w3.org/2006/webapi/XMLHttpRequest-2/
-  function html5FileAPI( options ) {
-    // Check only if the current value is `undefined` (default),
-    // because the developer may want to disable this check by setting
-    // the value on `false`.
-    if ( options.html5 === undefined ) {
-      // TODO implement
-      options.html5 = false;
-    }
-
-    return options.html5;
-  }
 
   function generateUID( element ) {
     var result = "",
