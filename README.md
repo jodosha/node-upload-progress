@@ -1,7 +1,7 @@
 # Node.js demo for asynchronous file upload with progress report
 
 ## Prerequisites
-[http://nodejs.org](Node.js) and [http://npmjs.org](NPM)
+[Node.js](http://nodejs.org) and [NPM](http://npmjs.org)
 
 ## Deployment instructions
 
@@ -14,4 +14,4 @@
 Google Chrome, Firefox, Opera, Safari and IE6+
 
 ## Copyright
-(c) 2011 Luca Guidi - [http://about.me/jodosha](http://about.me/jodosha), released under the MIT license
+&copy; 2011 Luca Guidi - [http://about.me/jodosha](http://about.me/jodosha), released under the MIT license
