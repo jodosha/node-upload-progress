@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -82,7 +81,6 @@ function uploadFile( req, res ) {
     fileName    = part.filename.split(/\\/).reverse()[0]
     fileName    = dirName + '/' + fileName;
     fileStream  = fs.createWriteStream(fileName);
-    clearSession(req);
     writeSession(req, 'path', fileName.replace('./public', ''));
 
     fileStream.addListener("error", function(err) {
