@@ -1,0 +1,15 @@
+{
+  "name": "upload",
+  "version": "0.0.1",
+  "repository": {},
+  "directories": {
+    "vendor": ""
+  },
+  "engines": {
+    "node": "*"
+  },
+  "dependencies": {
+    "express": "2.3.4",
+    "keys": "0.1.2"
+  }
+}
